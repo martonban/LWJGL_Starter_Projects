@@ -75,6 +75,8 @@ public class Window {
             throw new IllegalStateException("Failed to load GLFW !");
         }
 
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        
         // Létrhozzuk az OpenGL kontextust
         glfwMakeContextCurrent(glfwWindow);
 
