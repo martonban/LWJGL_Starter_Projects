@@ -14,7 +14,8 @@ public class Window {
     // Alap adatok megadása
     private int widt, height;
     private String title;
-
+    private float r, g, b, a;
+    private boolean fadeToBalck = false;
 
     private static Window window = null;
 
@@ -26,6 +27,11 @@ public class Window {
         this.widt = 1920;
         this.height = 1080;
         this.title = "2D Texture Loader";
+        r = 1;
+        g = 1;
+        b = 1;
+        a = 1;
+
     }
 
     // Singelton miatt amikor meghívjuk akkor egyeszerre létre is hozzuk
@@ -102,8 +108,19 @@ public class Window {
             // Poll Events
             glfwPollEvents();
 
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            if (fadeToBalck){
+                r = Math.max(r - 0.01f , 0);
+                g = Math.max(g - 0.01f , 0);
+                b = Math.max(b - 0.01f , 0);
+            }
+
+            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
+                fadeToBalck = true;
+            }
+
 
             glfwSwapBuffers(glfwWindow);
         }
