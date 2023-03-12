@@ -76,7 +76,9 @@ public class Window {
         }
 
         glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
-        
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+
         // Létrhozzuk az OpenGL kontextust
         glfwMakeContextCurrent(glfwWindow);
 
