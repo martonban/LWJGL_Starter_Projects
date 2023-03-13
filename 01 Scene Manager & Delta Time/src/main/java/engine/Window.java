@@ -15,13 +15,17 @@ public class Window {
     // Alap adatok megadása
     private int widt, height;
     private String title;
-    private float r, g, b, a;
+    public float r, g, b, a;
     private boolean fadeToBalck = false;
 
     private static Window window = null;
 
     // Ez egy memória cím lesz
     private long glfwWindow;
+
+
+    private static Scene currentScene;
+
 
     // A konstruktor azért private, mert azt szeretnénk, hogy Singelton legyen
     private Window() {
@@ -33,6 +37,20 @@ public class Window {
         b = 1;
         a = 1;
 
+    }
+
+    public static void changeScene(int newScene){
+        switch (newScene) {
+            case 0:
+                currentScene = new LevelEditorScene();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown scene '" + newScene + "1";
+                break;
+        }
     }
 
     // Singelton miatt amikor meghívjuk akkor egyeszerre létre is hozzuk
@@ -100,12 +118,15 @@ public class Window {
         // FONTOS!!!!
         GL.createCapabilities();
 
+        Window.changeScene(0);
+
     }
 
 
     public void loop(){
         float beginTime = Time.getTime();
         float endTime = Time.getTime();
+        float dt = -1.0f;
 
         while(!glfwWindowShouldClose(glfwWindow)) {
             // Poll Events
@@ -114,20 +135,15 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if (fadeToBalck){
-                r = Math.max(r - 0.01f , 0);
-                g = Math.max(g - 0.01f , 0);
-                b = Math.max(b - 0.01f , 0);
+            if(dt >= 0) {
+                currentScene.update(dt);
             }
 
-            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
-                fadeToBalck = true;
-            }
 
             glfwSwapBuffers(glfwWindow);
 
             endTime = Time.getTime();
-            float dt = endTime - beginTime;
+            dt = endTime - beginTime;
             beginTime = endTime;
         }
     }
