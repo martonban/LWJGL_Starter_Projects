@@ -3,6 +3,7 @@ package engine;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import util.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -103,6 +104,8 @@ public class Window {
 
 
     public void loop(){
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
 
         while(!glfwWindowShouldClose(glfwWindow)) {
             // Poll Events
@@ -121,8 +124,11 @@ public class Window {
                 fadeToBalck = true;
             }
 
-
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            float dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }
