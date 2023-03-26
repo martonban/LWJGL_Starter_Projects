@@ -2,6 +2,7 @@ package engine;
 
 
 import org.lwjgl.BufferUtils;
+import renderer.Shader;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -10,60 +11,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class LevelEditorScene extends Scene {
-
-
-    private final String vertexShaderSrc = "#version 330 core\n" +
-            "layout (location=0) in vec3 aPos;\n" +
-            "layout (location=1) in vec4 aColor;\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    fColor = aColor;\n" +
-            "    gl_Position = vec4(aPos, 1.0);\n" +
-            "}";
-
-    private final String fragmentShaderSrc = "#version 330 core\n" +
-            "\n" +
-            "out vec4 color;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    color = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n" +
-            "}";
-
-
-
-    /*
-    private final String vertexShaderSrc = "#version 330 core\n" +
-            "layout (location=0) in vec3 aPos;\n" +
-            "layout (location=1) in vec4 aColor;\n" +
-            "\n" +
-            "out vec4 fColor;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    fColor = aColor;\n" +
-            "    gl_Position = vec4(aPos, 1.0);\n" +
-            "}";
-
-    private final String fragmentShaderSrc = "#version 330 core\n" +
-            "\n" +
-            "in vec4 fColor;\n" +
-            "\n" +
-            "out vec4 color;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    color = fColor;\n" +
-            "}";
-
-     */
-
-
-    private int vertexID, fragmentID, shaderProgram;
-
+    
     private float[] vertexArray = {
             //    POSITION                  COLOR
              0.5f, -0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,
@@ -79,53 +27,17 @@ public class LevelEditorScene extends Scene {
 
     private int vaoID, vboID, eboID;
 
+    private Shader defaultShader;
+
     public LevelEditorScene() {
+
     }
 
 
     @Override
     public void init() {
-        // Lefordítjuk, ellenőrizzük, linkeljük a Shadereket
-        // Vertex Shader
-        vertexID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexID, vertexShaderSrc);
-        glCompileShader(vertexID);
-        // Vertex Hiba ellenőrzés az i post annotáció = information
-        int success = glGetShaderi(vertexID, GL_COMPILE_STATUS);
-        if (success == GL_FALSE) {
-            int len = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl' \n\t Vertex Shader compilation Failed");
-            System.out.println(glGetShaderInfoLog(vertexID, len));
-            assert false;
-        }
-
-        // Fragment Shader
-        fragmentID = glCreateShader(GL_FRAGMENT_SHADER  );
-        glShaderSource(fragmentID, fragmentShaderSrc);
-        glCompileShader(fragmentID);
-        success = glGetShaderi(fragmentID, GL_COMPILE_STATUS);
-        if (success == GL_FALSE) {
-            int len = glGetShaderi(fragmentID, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl' \n\t Fragment Shader compilation Failed");
-            System.out.println(glGetShaderInfoLog(fragmentID, len));
-            assert false;
-        }
-
-
-        // Shader linkelése
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexID);
-        glAttachShader(shaderProgram, fragmentID);
-        glLinkProgram(shaderProgram);
-
-        // Linkelés sikereségének a megnézése
-        success = glGetProgrami(shaderProgram, GL_LINK_STATUS);
-        if(success == GL_FALSE){
-            int len = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: 'defaultShader.glsl' \n\t Linking Shader failed");
-            System.out.println(glGetProgramInfoLog(shaderProgram, len));
-            assert false;
-        }
+        defaultShader = new Shader("assets/shaders/default.glsl");
+        defaultShader.compile();
 
         // VAO létrehozása
         vaoID = glGenVertexArrays();
@@ -163,8 +75,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
-        // Bindoljuk a Shader programot
-        glUseProgram(shaderProgram);
+        defaultShader.use();
 
         // Binduljuk a VAO-t
         glBindVertexArray(vaoID);
@@ -182,7 +93,7 @@ public class LevelEditorScene extends Scene {
 
         glBindVertexArray(0);
 
-        glUseProgram(0);
+        defaultShader.detach();
     }
 
 
