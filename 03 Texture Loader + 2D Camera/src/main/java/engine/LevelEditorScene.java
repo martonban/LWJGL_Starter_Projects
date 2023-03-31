@@ -4,6 +4,7 @@ package engine;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
+import util.Time;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -15,10 +16,10 @@ public class LevelEditorScene extends Scene {
     
     private float[] vertexArray = {
             //    POSITION                  COLOR
-             100.5f, -0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f,  100.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,
+             100.5f,  -0.5f,  0.0f,      1.0f, 0.0f, 0.0f, 1.0f,
+             -0.5f,   100.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,
              100.5f,  100.5f, 0.0f,      0.0f, 0.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,      1.0f, 1.0f, 0.0f, 1.0f
+             -0.5f,   -0.5f,  0.0f,      1.0f, 1.0f, 0.0f, 1.0f
     };
 
     private int[] elementArray = {
@@ -77,9 +78,13 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
+        camera.position.x -= dt * 50.0f;
+        camera.position.y -= dt * 30.0f;
+
         defaultShader.use();
         defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uView", camera.getViewMatrix());
+        defaultShader.uploadFloat("uTime", Time.getTime());
         // Binduljuk a VAO-t
         glBindVertexArray(vaoID);
 
