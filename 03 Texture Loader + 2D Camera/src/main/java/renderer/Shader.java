@@ -56,10 +56,6 @@ public class Shader {
             e.printStackTrace();
             assert false : "Error: Could not open file for shader: '" + filepath + "'";
         }
-
-        System.out.println(vertexSource);
-        System.out.println(fragmentSource);
-
     }
 
     public void compile(){
@@ -104,7 +100,6 @@ public class Shader {
             System.out.println(glGetProgramInfoLog(shaderProgramID, len));
             assert false;
         }
-
     }
 
     public void use(){
@@ -113,7 +108,6 @@ public class Shader {
             glUseProgram(shaderProgramID);
             beingUsed = true;
         }
-
     }
 
     public void detach(){
@@ -165,6 +159,12 @@ public class Shader {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform1i(varLocation, val);
+    }
+
+    public void uploadTextures(String varName, int slot) {
+        int varLocation = glGetUniformLocation(shaderProgramID, varName);
+        use();
+        glUniform1i(varLocation, slot);
     }
 
 
