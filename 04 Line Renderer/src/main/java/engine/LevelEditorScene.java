@@ -16,22 +16,20 @@ import static org.lwjgl.opengl.GL30.*;
 public class LevelEditorScene extends Scene {
     
     private float[] vertexArray = {
-            //    POSITION                  COLOR                    UV
-             100.5f,  -0.5f,  0.0f,      1.0f, 0.0f, 0.0f, 1.0f,    0.5f, 1,
-             -0.5f,   100.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,    0, 0,
-             100.5f,  100.5f, 0.0f,      0.0f, 0.0f, 1.0f, 1.0f,    0.5f, 0,
-             -0.5f,   -0.5f,  0.0f,      1.0f, 1.0f, 0.0f, 1.0f,    0, 1
+            //    POSITION                  COLOR
+             1.0f,  1.0f,  0.0f,         1.0f, 1.0f, 1.0f, 1.0f,
+             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
+             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
+             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
     };
 
     private int[] elementArray = {
-        2, 1, 0,
-        0, 1, 3
+        0, 1, 2, 3
     };
 
     private int vaoID, vboID, eboID;
 
     private Shader defaultShader;
-    private Texture testTexture;
 
     public LevelEditorScene() {
 
@@ -43,7 +41,7 @@ public class LevelEditorScene extends Scene {
         this.camera = new Camera(new Vector2f());
         defaultShader = new Shader("assets/shaders/default.glsl");
         defaultShader.compile();
-        this.testTexture = new Texture("assets/textures/mario.png");
+
 
         // VAO létrehozása
         vaoID = glGenVertexArrays();
@@ -76,8 +74,6 @@ public class LevelEditorScene extends Scene {
         glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeInBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, UVSize, GL_FLOAT, false, vertexSizeInBytes, (positionsSize + colorSize) * Float.BYTES );
-        glEnableVertexAttribArray(2);
 
     }
 
@@ -89,14 +85,7 @@ public class LevelEditorScene extends Scene {
 
         defaultShader.use();
 
-        // TEXTURA FELTÖLTÉSE
-        defaultShader.uploadTextures("TEX_SAMPLER", 0);
-        glActiveTexture(GL_TEXTURE0);
-        testTexture.bind();
 
-        defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-        defaultShader.uploadMat4f("uView", camera.getViewMatrix());
-        defaultShader.uploadFloat("uTime", Time.getTime());
         // Binduljuk a VAO-t
         glBindVertexArray(vaoID);
 
@@ -104,7 +93,7 @@ public class LevelEditorScene extends Scene {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_LINES, elementArray.length, GL_UNSIGNED_INT, 0);
 
 
         // Unbind mindent

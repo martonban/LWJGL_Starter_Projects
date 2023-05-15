@@ -142,8 +142,6 @@ public class Window {
             }
 
 
-
-
             glfwSwapBuffers(glfwWindow);
 
             endTime = Time.getTime();
