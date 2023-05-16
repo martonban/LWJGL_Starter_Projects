@@ -17,14 +17,15 @@ public class LevelEditorScene extends Scene {
     
     private float[] vertexArray = {
             //    POSITION                  COLOR
-             1.0f,  1.0f,  0.0f,         1.0f, 1.0f, 1.0f, 1.0f,
              1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
+             0.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
+             1.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
+             0.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
     };
 
     private int[] elementArray = {
-        0, 1, 2, 3
+        0, 1,
+        2, 3
     };
 
     private int vaoID, vboID, eboID;
@@ -66,7 +67,7 @@ public class LevelEditorScene extends Scene {
         int positionsSize = 3;
         int colorSize = 4;
         int UVSize = 2;
-        int vertexSizeInBytes = (positionsSize + colorSize + UVSize) * Float.BYTES;
+        int vertexSizeInBytes = (positionsSize + colorSize) * Float.BYTES;
 
         glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeInBytes, 0);
         glEnableVertexAttribArray(0);
@@ -93,7 +94,7 @@ public class LevelEditorScene extends Scene {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        glDrawElements(GL_LINES, elementArray.length, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_LINE_STRIP, vertexArray.length, GL_UNSIGNED_INT, 0);
 
 
         // Unbind mindent
