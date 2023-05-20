@@ -26,4 +26,11 @@ public class Line {
         this.endPoint.add(deltaPos);
     }
 
+    public Vector2f getStartPoint() {
+        return startPoint;
+    }
+
+    public Vector2f getEndPoint() {
+        return endPoint;
+    }
 }

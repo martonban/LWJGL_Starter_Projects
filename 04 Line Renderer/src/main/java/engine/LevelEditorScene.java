@@ -1,11 +1,10 @@
 package engine;
 
-
+import component.Square;
+import core.converter.SquareToLineRenderer;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
-import renderer.Texture;
-import util.Time;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -15,22 +14,16 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class LevelEditorScene extends Scene {
     
-    private float[] vertexArray = {
-            //    POSITION                  COLOR
-             1.0f,  1.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-             0.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-             1.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-             0.0f,  0.0f,  0.0f,         1.0f, 0.0f, 0.0f, 1.0f,
-    };
+    private float[] vertexArray = {};
 
-    private int[] elementArray = {
-        0, 1,
-        2, 3
-    };
+    private int[] elementArray = {};
 
     private int vaoID, vboID, eboID;
 
     private Shader defaultShader;
+
+    private Square square;
+    private SquareToLineRenderer squareToLineRenderer;
 
     public LevelEditorScene() {
 
@@ -43,6 +36,11 @@ public class LevelEditorScene extends Scene {
         defaultShader = new Shader("assets/shaders/default.glsl");
         defaultShader.compile();
 
+        square = new Square(1, new Vector2f(0.0f, 0.0f),
+                new Vector2f(0.2f, 0.2f));
+        squareToLineRenderer = new SquareToLineRenderer(square);
+        this.vertexArray = squareToLineRenderer.getVertexArray();
+        this.elementArray = squareToLineRenderer.getElementArray();
 
         // VAO létrehozása
         vaoID = glGenVertexArrays();
@@ -74,8 +72,6 @@ public class LevelEditorScene extends Scene {
 
         glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeInBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
-
-
     }
 
 
@@ -105,6 +101,4 @@ public class LevelEditorScene extends Scene {
 
         defaultShader.detach();
     }
-
-
 }
